@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- A random selection of elements from data.xml
+     Some IDREFS (refs attribute of element pointer) do not have a corresponding id in this sample-->
+<?xml-model href="data.rnc" type="application/relax-ng-compact-syntax"?>
+<data version="3.0"> 
+   <synsets source="dict/data.adv" xml:base="data.adv.xml"><!--10 out of 3621 elements-->
+    <synset id="r00001740" type="r">
+         <lex_filenum>02</lex_filenum>
+         <word lex_id="0">a cappella</word>
+         <def>without musical accompaniment</def>
+         <example>they performed a cappella</example>
+      </synset>
+      <synset id="r00261389" type="r">
+         <lex_filenum>02</lex_filenum>
+         <word lex_id="0">agonizingly</word>
+         <word lex_id="0">excruciatingly</word>
+         <word lex_id="0">torturously</word>
+         <pointer refs="a01711724" source="3" target="6">Derived from adjective</pointer>
+         <pointer refs="a01711724" source="2" target="3">Derived from adjective</pointer>
+         <pointer refs="a01711724" source="1" target="1">Derived from adjective</pointer>
+         <def>in a very painful manner</def>
+         <example>the progress was agonizingly slow</example>
+      </synset>
+      <synset id="r00423888" type="r">
+         <lex_filenum>02</lex_filenum>
+         <word lex_id="0">rallentando</word>
+         <pointer refs="n07020895">Domain of synset - TOPIC</pointer>
+         <def>slowing down</def>
+         <example>this passage should be played rallentando</example>
+      </synset>
+      <synset id="r00471945" type="r">
+         <lex_filenum>02</lex_filenum>
+         <word lex_id="0">surpassingly</word>
+         <pointer refs="a01676026" source="1" target="5">Derived from adjective</pointer>
+         <def>to a surpassing degree</def>
+         <example>she was a surpassingly beautiful woman</example>
+      </synset>
+   </synsets>
+</data>

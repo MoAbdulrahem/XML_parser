@@ -1,0 +1,6 @@
+this
+is
+    a
+    sample
+for 
+deleting white spaces   from the                file

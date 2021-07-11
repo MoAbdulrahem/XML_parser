@@ -1,6 +1,6 @@
 # This file contains two functions: scrape_data(text) and prettify_data(tags)
 # scrape_data(text) should be assigned the XML file at the beggining of execution, it returns a list of tags that should be used during the rest of the runtime
-#prettify_data(tags) takes a list of tags (like the one outputted by scrape_data()) then it reorganizes and displays the data with indentations corrosponding to its tag level
+# prettify_data(tags) takes a list of tags (like the one outputted by scrape_data()) then it reorganizes and displays the data with indentations corrosponding to its tag level
 
 from minify import Minify
 
@@ -20,7 +20,6 @@ def scrape_data(text):
     Takes the XML file as a string and scrapes the data from it into a list.
     Returns a list of tags and their values.
     '''
-    # Minifying Text
     text = text.replace("   ","")
     text = text.replace("\n","")
     tags = []
@@ -44,6 +43,8 @@ def scrape_data(text):
             if i == len(text)-1:    #we reached the end of the text
                 break
             while text[k] != '<':
+                if k == len(text)-1:    #we reached the end of the text
+                    break
                 temp2 += text[k]
                 k+=1
             tags.append(temp2)

@@ -1,0 +1,19 @@
+<RCC>
+  <qresource prefix="newPrefix">
+    <file>new.png</file>
+    <file>open.png</file>
+    <file>bold.png</file>
+    <file>center-align.png</file>
+    <file>copy.png</file>
+    <file>cut.png</file>
+    <file>italic.png</file>
+    <file>justification.png</file>
+    <file>left-align.png</file>
+    <file>paste.png</file>
+    <file>Redo.png</file>
+    <file>right-align.png</file>
+    <file>save.png</file>
+    <file>underline.png</file>
+    <file>undo.png</file>
+  </qresource>
+</RCC>

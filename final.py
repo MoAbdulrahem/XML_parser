@@ -29,6 +29,9 @@ class MainApp(QMainWindow, XML_Editor):
         self.menu_tool_bar()
         self.handle_buttons()
 
+    global flag
+    flag = 0
+
     def add_text(self, textadded):
         self.editor.selectAll()
         self.editor.cut()
@@ -46,6 +49,11 @@ class MainApp(QMainWindow, XML_Editor):
         self.editor.redo()
         if self.editor.toPlainText() == '':
             self.editor.redo()
+
+    # def creatnewwindow(self):
+    #     dialog = MainApp()
+    #     dialog.show()
+    #     dialog.move(self.x() + 20, self.y() + 20)
 
     def menu_tool_bar(self):
         toolbar = QToolBar()
@@ -177,14 +185,12 @@ class MainApp(QMainWindow, XML_Editor):
         except Exception as e:
             print(e)
 
-        # msg = QMessageBox()
-        # msg.setWindowTitle("Save File")
-        # msg.setText("File Saved Successfully\n")
-        # s = msg.exec_()
-        # self.saveFile()
-
     def file_new(self):
         dialog = MainApp()
+        global flag
+        flag = flag + 1
+        if flag == 1:
+            dialog.close()
         dialog.show()
         dialog.move(self.x() + 20, self.y() + 20)
 
@@ -198,9 +204,13 @@ class MainApp(QMainWindow, XML_Editor):
                 full_data = f.read()
                 data = full_data[:1000]
                 row = self.editor.toPlainText()
-                # if str(row) != "":
                 if len(row) != 0:
                     dialog = MainApp()
+                    global flag
+                    flag = flag + 1
+                    if flag == 1:
+                        dialog.close()
+
                     dialog.show()
                     dialog.move(self.x() + 20, self.y() + 20)
                     dialog.editor.setText(data)
@@ -208,20 +218,27 @@ class MainApp(QMainWindow, XML_Editor):
                     self.editor.setText(data)
 
     def closeEvent(self, event):
-        close = QMessageBox()
-        close.setWindowTitle("Close")
-        close.setText("Do you want to save changes to this file?\n")
-        close.setIcon(QMessageBox.Question)
-        close.setStandardButtons(QMessageBox.Save | QMessageBox.Close | QMessageBox.Cancel)
-        close.setDefaultButton(QMessageBox.Save)
-        close = close.exec_()
-
-        if close == QMessageBox.Save:
-            self.saveFile()
-        elif close == QMessageBox.Close:
+        global flag
+        if flag == 1:
             event.accept()
+            flag = flag+1
+            print("flag")
+
         else:
-            event.ignore()
+            close = QMessageBox()
+            close.setWindowTitle("Close")
+            close.setText("Do you want to save changes to this file?\n")
+            close.setIcon(QMessageBox.Question)
+            close.setStandardButtons(QMessageBox.Save | QMessageBox.Close | QMessageBox.Cancel)
+            close.setDefaultButton(QMessageBox.Save)
+            close = close.exec_()
+
+            if close == QMessageBox.Save:
+                self.saveFile()
+            elif close == QMessageBox.Close:
+                event.accept()
+            else:
+                event.ignore()
 
     def handle_buttons(self):
         # Check Errors

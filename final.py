@@ -3,6 +3,7 @@ from PyQt5.QtWidgets import *
 from PyQt5.QtCore import *
 from PyQt5.QtGui import *
 from PyQt5.QtWidgets import QApplication, QWidget, QMessageBox, QFileDialog, QFontDialog, QColorDialog
+from PyQt5.QtGui import QTextCursor
 import math
 import XML_Editor
 import ctypes
@@ -13,7 +14,6 @@ from prettify import *
 from minify import *
 from validator import *
 
-
 XML_Editor, _ = loadUiType('XML_Editor.ui')
 
 
@@ -22,13 +22,30 @@ class MainApp(QMainWindow, XML_Editor):
         QMainWindow.__init__(self)
         self.setupUi(self)
         self.ui = XML_Editor
-        # self.fontSizeBox = QSpinBox()
         font1 = QFont('Times', 12)
         self.editor.setFont(font1)
         self.path = ""
         self.setWindowTitle('XML Editor')
         self.menu_tool_bar()
         self.handle_buttons()
+
+    def add_text(self, textadded):
+        self.editor.selectAll()
+        self.editor.cut()
+        cursor = QTextCursor(self.editor.document())
+        cursor.setPosition(0)
+        self.editor.setTextCursor(cursor)
+        self.editor.insertPlainText(textadded)
+
+    def undo(self):
+        self.editor.undo()
+        if self.editor.toPlainText() == '':
+            self.editor.undo()
+
+    def redo(self):
+        self.editor.redo()
+        if self.editor.toPlainText() == '':
+            self.editor.redo()
 
     def menu_tool_bar(self):
         toolbar = QToolBar()
@@ -42,7 +59,7 @@ class MainApp(QMainWindow, XML_Editor):
         toolbar.addAction(self.actionSave)
         self.actionSave.triggered.connect(self.saveFile)
 
-        # toolbar.addAction(self.actionSave_As)
+        toolbar.addAction(self.actionSave_As)
         toolbar.addSeparator()
         self.actionSave_As.triggered.connect(self.file_saveas)
 
@@ -56,10 +73,10 @@ class MainApp(QMainWindow, XML_Editor):
         self.actionPaste.triggered.connect(self.editor.paste)
 
         toolbar.addAction(self.actionUndo)
-        self.actionUndo.triggered.connect(self.editor.undo)
+        self.actionUndo.triggered.connect(self.undo)
 
         toolbar.addAction(self.actionRedo)
-        self.actionRedo.triggered.connect(self.editor.redo)
+        self.actionRedo.triggered.connect(self.redo)
         toolbar.addSeparator()
 
         toolbar.addAction(self.actionFont)
@@ -68,16 +85,6 @@ class MainApp(QMainWindow, XML_Editor):
         toolbar.addAction(self.actionColor)
         self.actionColor.triggered.connect(self.colorDialog)
 
-        # self.fontBox = QComboBox(self)
-        # self.fontBox.addItems(
-        #     ["Courier Std", "Hellentic Typewriter Regular", "Helvetica", "Arial", "SansSerif", "Helvetica", "Times",
-        #      "Monospace"])
-        # self.fontBox.activated.connect(self.setFont)
-        # toolbar.addWidget(self.fontBox)
-        #
-        # self.fontSizeBox.setValue(12)
-        # self.fontSizeBox.valueChanged.connect(self.setFontSize)
-        # toolbar.addWidget(self.fontSizeBox)
         toolbar.addSeparator()
 
         toolbar.addAction(self.actionLeft)
@@ -100,32 +107,30 @@ class MainApp(QMainWindow, XML_Editor):
         self.actionItalic.triggered.connect(self.italicText)
         toolbar.addSeparator()
 
-        # self.actionExit.triggered.connect(self.close)
-        self.actionExit.triggered.connect(self.show_close_msg_box)
+        self.actionExit.triggered.connect(self.close)
 
+        # Check Errors
         self.action1.triggered.connect(self.op1)
+        # Solve Errors
         self.action2.triggered.connect(self.op2)
+        # Prettify
         self.action3.triggered.connect(self.op3)
+        # Convert To JSON
         self.action4.triggered.connect(self.op4)
+        # Minify
         self.action5.triggered.connect(self.op5)
+        # Compress
+        self.action6.triggered.connect(self.op6)
 
         self.addToolBar(toolbar)
 
-    # def setFontSize(self):
-    #     value = self.fontSizeBox.value()
-    #     self.editor.setFontPointSize(value)
-    #
-    # def setFont(self):
-    #     font = self.fontBox.currentText()
-    #     self.editor.setCurrentFont(QFont(font))
-
     def italicText(self):
         state = self.editor.fontItalic()
-        self.editor.setFontItalic(not (state))
+        self.editor.setFontItalic(not state)
 
     def underlineText(self):
         state = self.editor.fontUnderline()
-        self.editor.setFontUnderline(not (state))
+        self.editor.setFontUnderline(not state)
 
     def boldText(self):
 
@@ -147,7 +152,6 @@ class MainApp(QMainWindow, XML_Editor):
         self.editor.setTextColor(color)
 
     def saveFile(self):
-        print(self.path)
         if self.path == '':
             self.file_saveas()
         text = self.editor.toPlainText()
@@ -155,7 +159,6 @@ class MainApp(QMainWindow, XML_Editor):
             with open(self.path, 'w') as f:
                 f.write(text)
                 self.update_title()
-                print("save flag")
         except Exception as e:
             print(e)
 
@@ -174,10 +177,10 @@ class MainApp(QMainWindow, XML_Editor):
         except Exception as e:
             print(e)
 
-        msg = QMessageBox()
-        msg.setWindowTitle("Save File")
-        msg.setText("File Saved Successfully\n")
-        s = msg.exec_()
+        # msg = QMessageBox()
+        # msg.setWindowTitle("Save File")
+        # msg.setText("File Saved Successfully\n")
+        # s = msg.exec_()
         # self.saveFile()
 
     def file_new(self):
@@ -192,112 +195,74 @@ class MainApp(QMainWindow, XML_Editor):
             f = open(filename[0], 'r')
 
             with f:
-                # if len(self.editor.toPlainText()) > 1:
-                dialog = MainApp()
-                dialog.show()
-                dialog.move(self.x() + 20, self.y() + 20)
                 full_data = f.read()
                 data = full_data[:1000]
-                # data = f.read()
-                dialog.editor.setText(data)
+                row = self.editor.toPlainText()
+                # if str(row) != "":
+                if len(row) != 0:
+                    dialog = MainApp()
+                    dialog.show()
+                    dialog.move(self.x() + 20, self.y() + 20)
+                    dialog.editor.setText(data)
+                else:
+                    self.editor.setText(data)
 
-    def show_close_msg_box(self):
-        msg = QMessageBox()
-        msg.setWindowTitle("Close")
-        msg.setText("Do you want to save changes to this file?\n")
-        msg.setIcon(QMessageBox.Question)
-        msg.setStandardButtons(QMessageBox.Save | QMessageBox.Close | QMessageBox.Cancel)
-        msg.setDefaultButton(QMessageBox.Save)
+    def closeEvent(self, event):
+        close = QMessageBox()
+        close.setWindowTitle("Close")
+        close.setText("Do you want to save changes to this file?\n")
+        close.setIcon(QMessageBox.Question)
+        close.setStandardButtons(QMessageBox.Save | QMessageBox.Close | QMessageBox.Cancel)
+        close.setDefaultButton(QMessageBox.Save)
+        close = close.exec_()
 
-        msg.buttonClicked.connect(self.handle_close_msg_box_buttons)
-
-        x = msg.exec_()
-
-    def handle_close_msg_box_buttons(self, i):
-        x = i.text()
-        if x == "Save":
+        if close == QMessageBox.Save:
             self.saveFile()
-            self.close()
-            # if flag != 0:
-            #    self.close()
-        elif x == "Close":
-            self.close()
-
-    # def closeEvent(self, event):
-    #     x = event.text()
-    #     if x == "Save":
-    #         self.saveFile()
-    #         # if flag != 0:
-    #         #    event.accept()
-    #     elif x == "Close":
-    #         event.accept()
-    #     else:
-    #         event.ignore()
-
-    # def msg_action_save(self):
-    #     self.saveFile()
-    #
-    # def msg_action_close(self):
-    #     self.close()
-
-    # def closeEvent(self, *event, **ddd):
-    #     print("fff")
-    #
-    #     reply = QMessageBox.Question(self, 'Window Close', 'Save Changes to this File?', QMessageBox.Save |
-    #                                  QMessageBox.Yes, QMessageBox.Save)
-    #     if reply == QMessageBox.Yes:
-    #         event.accept()
-    #     else:
-    #         event.ignore()
-
-    # msgbox = QMessageBox()
-    # msgbox.setWindowTitle("Close")
-    # msgbox.setText("Do you want to save changes to this file?\n")
-    # savebtn = msgbox.addButton("Save", msgbox.YesRole)
-    # Nobtn = msgbox.addButton(msgbox.No)
-    # cancel_bttn = msgbox.addButton("       Cancel      ", msgbox.NoRole)
-    # bttn = msgbox.exec_()
-    # msgbox.close()
-    # savebtn.clicked.connect(lambda: self.msg_action_save())
-    # Nobtn.clicked.connect(lambda: self.msg_action_close())
-    # print("gg")
-    # self.saveFile()
-    # event.ignore()
-
-    # print("5")
-    # event.acccept()
-    # applyCompaction.clicked.connect(lambda: self.msg_action())
-    # bttn = msgbox.exec_()
-    # msgbox.close()
+        elif close == QMessageBox.Close:
+            event.accept()
+        else:
+            event.ignore()
 
     def handle_buttons(self):
+        # Check Errors
         self.pushButton.clicked.connect(lambda: self.op1())
+        # Solve Errors
         self.pushButton_2.clicked.connect(lambda: self.op2())
         # Prettify
         self.pushButton_3.clicked.connect(lambda: self.op3())
+        # Convert To JSON
         self.pushButton_4.clicked.connect(lambda: self.op4())
         # Minify
         self.pushButton_5.clicked.connect(lambda: self.op5())
+        # Compress
+        self.pushButton_6.clicked.connect(lambda: self.op6())
 
+    # Check Errors
     def op1(self):
         print("op1")
-        self.editor.setText(error2(self.editor.toPlainText()))
+        self.add_text(error2(self.editor.toPlainText()))
 
+    # Solve Errors
     def op2(self):
         print("op2")
 
+    # Prettify
     def op3(self):
         print("op3")
-        self.editor.setText(prettify_data(scrape_data(self.editor.toPlainText())))
+        self.add_text(prettify_data(scrape_data(self.editor.toPlainText())))
 
+    # Convert To JSON
     def op4(self):
         print("op4")
 
+    # Minify
     def op5(self):
         print("op5")
-        self.editor.setText(Minify(self.editor.toPlainText()))
+        self.add_text(Minify(self.editor.toPlainText()))
 
-
+    # Compress
+    def op6(self):
+        print("op6")
 
 
 def main():

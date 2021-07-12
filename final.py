@@ -11,6 +11,7 @@ from PyQt5.QtPrintSupport import *
 from PyQt5.uic import loadUiType
 from prettify import *
 from minify import *
+from validator import *
 
 
 XML_Editor, _ = loadUiType('XML_Editor.ui')
@@ -280,13 +281,13 @@ class MainApp(QMainWindow, XML_Editor):
 
     def op1(self):
         print("op1")
+        self.editor.setText(error2(self.editor.toPlainText()))
 
     def op2(self):
         print("op2")
 
     def op3(self):
         print("op3")
-        # prettify_data(scrape_data(self.editor.toPlainText()))
         self.editor.setText(prettify_data(scrape_data(self.editor.toPlainText())))
 
     def op4(self):

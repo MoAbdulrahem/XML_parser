@@ -1,6 +1,7 @@
 import sys, os
 from PyQt5.QtWidgets import *
 from PyQt5.QtCore import *
+from PyQt5.QtCore import QFileInfo, QSettings
 from PyQt5.QtGui import *
 from PyQt5.QtWidgets import QApplication, QWidget, QMessageBox, QFileDialog, QFontDialog, QColorDialog
 from PyQt5.QtGui import QTextCursor
@@ -33,6 +34,9 @@ class MainApp(QMainWindow, XML_Editor):
     global flag
     flag = 0
 
+    # def update_title(self):
+    #     self.setWindowTitle(file_name[0])
+
     def add_text(self, textadded):
         self.editor.selectAll()
         self.editor.cut()
@@ -40,6 +44,7 @@ class MainApp(QMainWindow, XML_Editor):
         cursor.setPosition(0)
         self.editor.setTextCursor(cursor)
         self.editor.insertPlainText(textadded)
+        cursor.setPosition(0)
 
     def undo(self):
         self.editor.undo()
@@ -133,7 +138,6 @@ class MainApp(QMainWindow, XML_Editor):
         # De_Compress
         self.actionDecompress.triggered.connect(self.op7)
 
-
         self.addToolBar(toolbar)
 
     def italicText(self):
@@ -170,21 +174,27 @@ class MainApp(QMainWindow, XML_Editor):
         try:
             with open(self.path, 'w', encoding='utf-8') as f:
                 f.write(text)
-                self.update_title()
+                s = QFileInfo(self.path).fileName()
+                self.setWindowTitle(s)
+
         except Exception as e:
+
             print(e)
 
     def file_saveas(self):
+
         self.path, _ = QFileDialog.getSaveFileName(self, "Save file", self.path,
                                                    "XML File (*.xml);;Text files (*.txt);;JSON Files "
                                                    "(*.json);;All files (*.*)")
+
         if self.path == '':
             return
         text = self.editor.toPlainText()
         try:
             with open(self.path, 'w', encoding='utf-8') as f:
                 f.write(text)
-                self.update_title()
+                s = QFileInfo(self.path).fileName()
+                self.setWindowTitle(s)
 
         except Exception as e:
             print(e)
@@ -261,93 +271,149 @@ class MainApp(QMainWindow, XML_Editor):
 
     # Check Errors
     def op1(self):
-        try:
-            print("op1")
-            self.add_text(error2(self.editor.toPlainText()))
-        except:
+        if self.editor.toPlainText() == '':
             msg = QMessageBox()
             msg.setWindowTitle("error")
-            msg.setText("Input Error \n")
-            msg.setIcon(QMessageBox.Critical)
+            msg.setText("File is empty! \n")
+            msg.setIcon(QMessageBox.Warning)
             x = msg.exec_()
+
+        else:
+            try:
+                print("op1")
+                self.add_text(error2(self.editor.toPlainText()))
+            except:
+                msg = QMessageBox()
+                msg.setWindowTitle("error")
+                msg.setText("Input Error \n")
+                msg.setIcon(QMessageBox.Critical)
+                x = msg.exec_()
 
     # Solve Errors
     def op2(self):
-        try:
-            print("op2")
-        except:
+        if self.editor.toPlainText() == '':
             msg = QMessageBox()
             msg.setWindowTitle("error")
-            msg.setText("Input Error \n")
-            msg.setIcon(QMessageBox.Critical)
+            msg.setText("File is empty! \n")
+            msg.setIcon(QMessageBox.Warning)
             x = msg.exec_()
+
+        else:
+            try:
+                print("op2")
+            except:
+                msg = QMessageBox()
+                msg.setWindowTitle("error")
+                msg.setText("Input Error \n")
+                msg.setIcon(QMessageBox.Critical)
+                x = msg.exec_()
 
     # Prettify
     def op3(self):
-        try:
-            self.add_text(prettify_data(scrape_data(self.editor.toPlainText())))
-        except:
+        if self.editor.toPlainText() == '':
             msg = QMessageBox()
             msg.setWindowTitle("error")
-            msg.setText("Input Error \n")
-            msg.setIcon(QMessageBox.Critical)
+            msg.setText("File is empty! \n")
+            msg.setIcon(QMessageBox.Warning)
             x = msg.exec_()
+
+        else:
+            try:
+                self.add_text(prettify_data(scrape_data(self.editor.toPlainText())))
+            except:
+                msg = QMessageBox()
+                msg.setWindowTitle("error")
+                msg.setText("Input Error \n")
+                msg.setIcon(QMessageBox.Critical)
+                x = msg.exec_()
 
     # Convert To JSON
     def op4(self):
-        print("op4")
+        if self.editor.toPlainText() == '':
+            msg = QMessageBox()
+            msg.setWindowTitle("error")
+            msg.setText("File is empty! \n")
+            msg.setIcon(QMessageBox.Warning)
+            x = msg.exec_()
+
+        else:
+            print("op4")
 
     # Minify
     def op5(self):
-        try:
-            self.add_text(Minify(self.editor.toPlainText()))
-        except:
+        if self.editor.toPlainText() == '':
             msg = QMessageBox()
             msg.setWindowTitle("error")
-            msg.setText("Input Error \n")
-            msg.setIcon(QMessageBox.Critical)
+            msg.setText("File is empty! \n")
+            msg.setIcon(QMessageBox.Warning)
             x = msg.exec_()
+
+        else:
+            try:
+                self.add_text(Minify(self.editor.toPlainText()))
+            except:
+                msg = QMessageBox()
+                msg.setWindowTitle("error")
+                msg.setText("Input Error \n")
+                msg.setIcon(QMessageBox.Critical)
+                x = msg.exec_()
 
     # Compress
     def op6(self):
-        try:
-            # self.add_text(Minify(self.editor.toPlainText()))
-            original_data = Minify(self.editor.toPlainText())
-            # original_data = Minify("ABCDADADA")
-            hashing_table = generate_hash_table(original_data)
-            binary_stream = string_to_binary(original_data, hashing_table)
-            encoded_text = encode(binary_stream)
-            self.add_text(encoded_text)
-            with open('hash-table.txt', 'w', encoding='utf-8') as f:
-                f.write(str(hashing_table))
-        except:
+        if self.editor.toPlainText() == '':
             msg = QMessageBox()
             msg.setWindowTitle("error")
-            msg.setText("Input Error \n")
-            msg.setIcon(QMessageBox.Critical)
+            msg.setText("File is empty! \n")
+            msg.setIcon(QMessageBox.Warning)
             x = msg.exec_()
+
+        else:
+            try:
+                # self.add_text(Minify(self.editor.toPlainText()))
+                original_data = Minify(self.editor.toPlainText())
+                # original_data = Minify("ABCDADADA")
+                hashing_table = generate_hash_table(original_data)
+                binary_stream = string_to_binary(original_data, hashing_table)
+                encoded_text = encode(binary_stream)
+                self.add_text(encoded_text)
+                with open('hash-table.txt', 'w', encoding='utf-8') as f:
+                    f.write(str(hashing_table))
+            except:
+                msg = QMessageBox()
+                msg.setWindowTitle("error")
+                msg.setText("Input Error \n")
+                msg.setIcon(QMessageBox.Critical)
+                x = msg.exec_()
 
     # De_Compress
     def op7(self):
-        try:
-            with open('hash-table.txt', 'r', encoding='utf-8') as f:
-                string_hash_table = f.read()
-            new_hash_table = eval(string_hash_table)
-            # print(new_hash_table)
-            decoded_string = decode(self.editor.toPlainText())
-            # print (decoded_string)
-            reconstructed_string = binary_to_string(decoded_string, new_hash_table)
-            # reconstructed_string = prettify_data(reconstructed_string)
-            # print(reconstructed_string)
-            self.add_text(reconstructed_string)
-            with open('hash-table.txt', 'w', encoding='utf-8') as fs:
-                fs.write('')
-        except:
+        if self.editor.toPlainText() == '':
             msg = QMessageBox()
             msg.setWindowTitle("error")
-            msg.setText("Please Compress the file first \n")
-            msg.setIcon(QMessageBox.Critical)
+            msg.setText("File is empty! \n")
+            msg.setIcon(QMessageBox.Warning)
             x = msg.exec_()
+
+        else:
+            try:
+                with open('hash-table.txt', 'r', encoding='utf-8') as f:
+                    string_hash_table = f.read()
+                new_hash_table = eval(string_hash_table)
+                # print(new_hash_table)
+                decoded_string = decode(self.editor.toPlainText())
+                # print (decoded_string)
+                reconstructed_string = binary_to_string(decoded_string, new_hash_table)
+                # reconstructed_string = prettify_data(reconstructed_string)
+                # print(reconstructed_string)
+                self.add_text(reconstructed_string)
+                with open('hash-table.txt', 'w', encoding='utf-8') as fs:
+                    fs.write('')
+            except:
+                msg = QMessageBox()
+                msg.setWindowTitle("error")
+                msg.setText("Please Compress the file first \n")
+                msg.setIcon(QMessageBox.Critical)
+                x = msg.exec_()
 
 
 def main():

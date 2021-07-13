@@ -30,6 +30,8 @@ def scrape_data(text):
         temp2 = "" 
         if text[i] == '<': #an openning tag
             temp += text[i]
+            if i == len(text)-1:    #we reached the end of the text
+                break
             while text[j] != '>' and text[j] != '?' and text[j] != '!': #loop until '>' or " " to get the tag name
                 temp += text[j]     #concatenate the tag name to temp
                 j += 1

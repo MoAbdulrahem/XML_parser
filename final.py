@@ -13,7 +13,6 @@ from PyQt5.QtPrintSupport import *
 from PyQt5.uic import loadUiType
 from prettify import *
 from minify import *
-from validator import *
 from compression import *
 
 XML_Editor, _ = loadUiType('XML_Editor.ui')
@@ -322,14 +321,14 @@ class MainApp(QMainWindow, XML_Editor):
             x = msg.exec_()
 
         else:
-            try:
-                self.add_text(prettify_data(scrape_data(self.editor.toPlainText())))
-            except:
-                msg = QMessageBox()
-                msg.setWindowTitle("error")
-                msg.setText("Input Error \n")
-                msg.setIcon(QMessageBox.Critical)
-                x = msg.exec_()
+            # try:
+            self.add_text(prettify_data(scrape_data(self.editor.toPlainText())))
+            # except:
+            #     msg = QMessageBox()
+            #     msg.setWindowTitle("error")
+            #     msg.setText("Input Error \n")
+            #     msg.setIcon(QMessageBox.Critical)
+            #     x = msg.exec_()
 
     # Convert To JSON
     def op4(self):

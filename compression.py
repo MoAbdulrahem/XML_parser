@@ -119,7 +119,7 @@ def decode(encoded_message):
 
     for i in encoded_message:
         temp = ""
-        if len(bin(ord(i))[2:]) <9: #if the remaining sequence isn't 8 bits long, it would reaise an error when trying to convert to ASCII
+        if len(bin(ord(i))[2:]) <9: #if the remaining sequence isn't 8 bits long, it would raise an error when trying to convert to ASCII
             temp = '0'*(8-len(bin(ord(i))[2:]))+bin(ord(i))[2:] #add zeros on the left until it's 8 bits
         else:
             temp = bin(ord(i))[2:] #convert the character into binary

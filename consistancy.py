@@ -135,12 +135,14 @@ def fix_closing(s, txt):        #missing closing tag so stack at the end not zer
     cl_tag = op_tag[:1] + '/' + op_tag[1:]
     new_txt = ""
     holder = ""
-    for i in range(len(text)):
+    for i in range(len(txt)):
         temp = ""
         j = i + 1
+        if j > len(txt) - 1:
+            break
         if txt[i] == '<' and txt[i + 1] != '/':     #searching for opening tags only
-            temp += text[i]
-            while text[j] != '>' and txt[j] != ' ':
+            temp += txt[i]
+            while txt[j] != '>' and txt[j] != ' ':
                 temp += txt[j]
                 j += 1
             if txt[j] == '>' or txt[j] == ' ' or txt[j] != '/':     #we finished the tag
@@ -164,10 +166,6 @@ test = '''
         <example>they performed a cappella</example>
 </synset>
 '''
-
-
-
-
 
 
 

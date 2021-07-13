@@ -13,6 +13,7 @@ from PyQt5.QtPrintSupport import *
 from PyQt5.uic import loadUiType
 from prettify import *
 from minify import *
+from consistancy import *
 from compression import *
 
 XML_Editor, _ = loadUiType('XML_Editor.ui')
@@ -321,14 +322,14 @@ class MainApp(QMainWindow, XML_Editor):
             x = msg.exec_()
 
         else:
-            # try:
-            self.add_text(prettify_data(scrape_data(self.editor.toPlainText())))
-            # except:
-            #     msg = QMessageBox()
-            #     msg.setWindowTitle("error")
-            #     msg.setText("Input Error \n")
-            #     msg.setIcon(QMessageBox.Critical)
-            #     x = msg.exec_()
+            try:
+                self.add_text(prettify_data(scrape_data(self.editor.toPlainText())))
+            except:
+                msg = QMessageBox()
+                msg.setWindowTitle("error")
+                msg.setText("Input Error \n")
+                msg.setIcon(QMessageBox.Critical)
+                x = msg.exec_()
 
     # Convert To JSON
     def op4(self):
@@ -406,9 +407,10 @@ class MainApp(QMainWindow, XML_Editor):
                 decoded_string = decode(self.editor.toPlainText())
                 # print (decoded_string)
                 reconstructed_string = binary_to_string(decoded_string, new_hash_table)
-                # reconstructed_string = prettify_data(scrape_data(reconstructed_string))
+                # reconstructed_string = prettify_data(reconstructed_string)
                 # print(reconstructed_string)
                 self.add_text(reconstructed_string)
+                # self.add_text(prettify_data(scrape_data(self.editor.toPlainText())))
                 with open('hash-table.txt', 'w', encoding='utf-8') as fs:
                     fs.write('')
             except:

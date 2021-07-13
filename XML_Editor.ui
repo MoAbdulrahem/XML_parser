@@ -50,10 +50,8 @@ QPlainTextEdit {
 }
 QToolButton {
 	border-style: solid;
-	border-top-color: qlineargradient(spread:pad, x1:0.5, y1:1, x2:0.5, y2:0, stop:0 rgb(215, 215, 215), stop:1 rgb(222, 222, 222));
-	border-right-color: qlineargradient(spread:pad, x1:0, y1:0.5, x2:1, y2:0.5, stop:0 rgb(217, 217, 217), stop:1 rgb(227, 227, 227));
-	border-left-color: qlineargradient(spread:pad, x1:0, y1:0.5, x2:1, y2:0.5, stop:0 rgb(227, 227, 227), stop:1 rgb(217, 217, 217));
-	border-bottom-color: qlineargradient(spread:pad, x1:0.5, y1:1, x2:0.5, y2:0, stop:0 rgb(215, 215, 215), stop:1 rgb(222, 222, 222));
+	
+	border-color: rgb(34, 43, 46);
 	border-width: 1px;
 	border-radius: 5px;
 	color: #d3dae3;
@@ -179,7 +177,7 @@ QtoolBar::item {
 	
 	
   	spacing: 20px;
-  	padding: 10px20px;
+  	padding: 50px50px;
 	
 
 }
@@ -762,7 +760,7 @@ QScrollBar::add-page:vertical, QScrollBar::sub-page:vertical {
        </font>
       </property>
       <property name="text">
-       <string>De_Compress</string>
+       <string>Decompress</string>
       </property>
      </widget>
     </item>
@@ -836,10 +834,13 @@ QScrollBar::add-page:vertical, QScrollBar::sub-page:vertical {
     </property>
     <addaction name="action1"/>
     <addaction name="action2"/>
+    <addaction name="separator"/>
     <addaction name="action3"/>
     <addaction name="action4"/>
     <addaction name="action5"/>
+    <addaction name="separator"/>
     <addaction name="action6"/>
+    <addaction name="actionDecompress"/>
    </widget>
    <addaction name="menuFile"/>
    <addaction name="menuEdit"/>
@@ -1106,6 +1107,11 @@ QScrollBar::add-page:vertical, QScrollBar::sub-page:vertical {
   <action name="action6">
    <property name="text">
     <string>Compress</string>
+   </property>
+  </action>
+  <action name="actionDecompress">
+   <property name="text">
+    <string>Decompress</string>
    </property>
   </action>
  </widget>

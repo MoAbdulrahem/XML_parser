@@ -14,6 +14,7 @@ from prettify import *
 from minify import *
 from validator import *
 from compression import *
+
 XML_Editor, _ = loadUiType('XML_Editor.ui')
 
 
@@ -129,6 +130,9 @@ class MainApp(QMainWindow, XML_Editor):
         self.action5.triggered.connect(self.op5)
         # Compress
         self.action6.triggered.connect(self.op6)
+        # De_Compress
+        self.actionDecompress.triggered.connect(self.op7)
+
 
         self.addToolBar(toolbar)
 
@@ -164,7 +168,7 @@ class MainApp(QMainWindow, XML_Editor):
             self.file_saveas()
         text = self.editor.toPlainText()
         try:
-            with open(self.path, 'w' , encoding = 'utf-8') as f:
+            with open(self.path, 'w', encoding='utf-8') as f:
                 f.write(text)
                 self.update_title()
         except Exception as e:
@@ -178,7 +182,7 @@ class MainApp(QMainWindow, XML_Editor):
             return
         text = self.editor.toPlainText()
         try:
-            with open(self.path, 'w' , encoding = 'utf-8') as f:
+            with open(self.path, 'w', encoding='utf-8') as f:
                 f.write(text)
                 self.update_title()
 
@@ -198,7 +202,7 @@ class MainApp(QMainWindow, XML_Editor):
         filename = QFileDialog.getOpenFileName(self, 'Open File', "")
 
         if filename[0]:
-            f = open(filename[0], 'r' , encoding = 'utf-8')
+            f = open(filename[0], 'r', encoding='utf-8')
 
             with f:
                 full_data = f.read()
@@ -221,8 +225,7 @@ class MainApp(QMainWindow, XML_Editor):
         global flag
         if flag == 1:
             event.accept()
-            flag = flag+1
-            print("flag")
+            flag = flag + 1
 
         else:
             close = QMessageBox()
@@ -253,6 +256,8 @@ class MainApp(QMainWindow, XML_Editor):
         self.pushButton_5.clicked.connect(lambda: self.op5())
         # Compress
         self.pushButton_6.clicked.connect(lambda: self.op6())
+        # De_Compress
+        self.pushButton_7.clicked.connect(lambda: self.op7())
 
     # Check Errors
     def op1(self):
@@ -280,7 +285,6 @@ class MainApp(QMainWindow, XML_Editor):
     # Prettify
     def op3(self):
         try:
-            print("op3")
             self.add_text(prettify_data(scrape_data(self.editor.toPlainText())))
         except:
             msg = QMessageBox()
@@ -291,31 +295,10 @@ class MainApp(QMainWindow, XML_Editor):
 
     # Convert To JSON
     def op4(self):
-        try:
-            print("op4")
-            with open('hash-table.txt', 'r', encoding = 'utf-8') as f:
-                string_hash_table = f.read()
-            new_hash_table = eval(string_hash_table)
-            print(new_hash_table)
-            decoded_string = decode(self.editor.toPlainText())
-            # print (decoded_string)
-            reconstructed_string = binary_to_string(decoded_string,new_hash_table)
-            # reconstructed_string = prettify_data(reconstructed_string)
-            print(reconstructed_string)
-            self.add_text(reconstructed_string)
-            with open('hash-table.txt', 'w', encoding = 'utf-8') as fs:
-                fs.write('')
-        except:
-            msg = QMessageBox()
-            msg.setWindowTitle("error")
-            msg.setText("Please Compress the file first \n")
-            msg.setIcon(QMessageBox.Critical)
-            x = msg.exec_()
-
+        print("op4")
 
     # Minify
     def op5(self):
-        print("op5")
         try:
             self.add_text(Minify(self.editor.toPlainText()))
         except:
@@ -324,20 +307,19 @@ class MainApp(QMainWindow, XML_Editor):
             msg.setText("Input Error \n")
             msg.setIcon(QMessageBox.Critical)
             x = msg.exec_()
+
     # Compress
     def op6(self):
         try:
-            print("op6")
             # self.add_text(Minify(self.editor.toPlainText()))
             original_data = Minify(self.editor.toPlainText())
             # original_data = Minify("ABCDADADA")
-            hashing_table=generate_hash_table(original_data)
-            binary_stream = string_to_binary(original_data,hashing_table)
+            hashing_table = generate_hash_table(original_data)
+            binary_stream = string_to_binary(original_data, hashing_table)
             encoded_text = encode(binary_stream)
             self.add_text(encoded_text)
-            with open('hash-table.txt', 'w', encoding = 'utf-8') as f:
+            with open('hash-table.txt', 'w', encoding='utf-8') as f:
                 f.write(str(hashing_table))
-            print(self.path)
         except:
             msg = QMessageBox()
             msg.setWindowTitle("error")
@@ -345,6 +327,27 @@ class MainApp(QMainWindow, XML_Editor):
             msg.setIcon(QMessageBox.Critical)
             x = msg.exec_()
 
+    # De_Compress
+    def op7(self):
+        try:
+            with open('hash-table.txt', 'r', encoding='utf-8') as f:
+                string_hash_table = f.read()
+            new_hash_table = eval(string_hash_table)
+            # print(new_hash_table)
+            decoded_string = decode(self.editor.toPlainText())
+            # print (decoded_string)
+            reconstructed_string = binary_to_string(decoded_string, new_hash_table)
+            # reconstructed_string = prettify_data(reconstructed_string)
+            # print(reconstructed_string)
+            self.add_text(reconstructed_string)
+            with open('hash-table.txt', 'w', encoding='utf-8') as fs:
+                fs.write('')
+        except:
+            msg = QMessageBox()
+            msg.setWindowTitle("error")
+            msg.setText("Please Compress the file first \n")
+            msg.setIcon(QMessageBox.Critical)
+            x = msg.exec_()
 
 
 def main():

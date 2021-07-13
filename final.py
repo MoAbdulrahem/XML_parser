@@ -183,7 +183,7 @@ class MainApp(QMainWindow, XML_Editor):
 
     def file_saveas(self):
 
-        self.path, _ = QFileDialog.getSaveFileName(self, "Save file", self.path,
+        self.path, _ = QFileDialog.getSaveFileName(self, "Save file", "test",
                                                    "XML File (*.xml);;Text files (*.txt);;JSON Files "
                                                    "(*.json);;All files (*.*)")
 
@@ -209,7 +209,7 @@ class MainApp(QMainWindow, XML_Editor):
         dialog.move(self.x() + 20, self.y() + 20)
 
     def open_file(self):
-        filename = QFileDialog.getOpenFileName(self, 'Open File', "")
+        filename = QFileDialog.getOpenFileName(self, 'Open File', "test")
 
         if filename[0]:
             f = open(filename[0], 'r', encoding='utf-8')
@@ -228,8 +228,12 @@ class MainApp(QMainWindow, XML_Editor):
                     dialog.show()
                     dialog.move(self.x() + 20, self.y() + 20)
                     dialog.editor.setText(data)
+                    s = QFileInfo(filename[0]).fileName()
+                    dialog.setWindowTitle(s)
                 else:
                     self.editor.setText(data)
+                    s = QFileInfo(filename[0]).fileName()
+                    self.setWindowTitle(s)
 
     def closeEvent(self, event):
         global flag

@@ -406,7 +406,7 @@ class MainApp(QMainWindow, XML_Editor):
                 decoded_string = decode(self.editor.toPlainText())
                 # print (decoded_string)
                 reconstructed_string = binary_to_string(decoded_string, new_hash_table)
-                # reconstructed_string = prettify_data(reconstructed_string)
+                # reconstructed_string = prettify_data(scrape_data(reconstructed_string))
                 # print(reconstructed_string)
                 self.add_text(reconstructed_string)
                 with open('hash-table.txt', 'w', encoding='utf-8') as fs:

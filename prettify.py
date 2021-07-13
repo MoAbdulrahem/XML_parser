@@ -30,17 +30,18 @@ def scrape_data(text):
         temp2 = "" 
         if text[i] == '<': #an openning tag
             temp += text[i]
-            if i == len(text)-1:    #we reached the end of the text
-                break
-            while text[j] != '>' and text[j] != '?' and text[j] != '!': #loop until '>' or " " to get the tag name
-                temp += text[j]     #concatenate the tag name to temp
-                j += 1
-            if text[i]== '>' or text[i] == ' ' or text[j] != '/': #we reached the end of the tag
-                temp += '>'
-                tags.append(temp)
-                if tags[-1] == "<>": # check if there were empty tags and remove them 
-                    tags.pop()
-            
+            try:
+                while text[j] != '>' and text[j] != '?' and text[j] != '!': #loop until '>' or " " to get the tag name
+                    temp += text[j]     #concatenate the tag name to temp
+                    j += 1
+
+                if text[i]== '>' or text[i] == ' ' or text[j] != '/': #we reached the end of the tag
+                    temp += '>'
+                    tags.append(temp)
+                    if tags[-1] == "<>": # check if there were empty tags and remove them 
+                        tags.pop()
+            except:
+                pass
         elif text[i] == ">": # this part is to get the vlaue of the tag (i.e. <tag>value</tag>)
             if i == len(text)-1:    #we reached the end of the text
                 break

@@ -21,13 +21,7 @@
     <normaloff>XML.png</normaloff>XML.png</iconset>
   </property>
   <property name="styleSheet">
-   <string notr="true">/*
-ManjaroMix Style Sheet for QT Applications
-Author: Jaime A. Quiroga P.
-Company: GTRONICK
-Last updated: 25/02/2020, 15:42.
-Available at: https://github.com/GTRONICK/QSS/blob/master/ManjaroMix.qss
-*/
+   <string notr="true">
 QMainWindow {
 	background-color:#151a1e;
 }

@@ -16,6 +16,7 @@ from PyQt5.QtPrintSupport import *
 from PyQt5.uic import loadUiType
 from prettify import *
 from minify import *
+from consistancy import *
 from compression import *
 
 XML_Editor, _ = loadUiType('XML_Editor.ui')
@@ -454,6 +455,7 @@ class MainApp(QMainWindow, XML_Editor):
                 # reconstructed_string = prettify_data(reconstructed_string)
                 # print(reconstructed_string)
                 self.add_text(reconstructed_string)
+                # self.add_text(prettify_data(scrape_data(self.editor.toPlainText())))
                 with open('hash-table.txt', 'w', encoding='utf-8') as fs:
                     fs.write('')
             except:

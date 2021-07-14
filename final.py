@@ -1,25 +1,21 @@
 import sys, os
 from PyQt5.QtWidgets import *
 from PyQt5.QtCore import *
-from PyQt5.QtCore import QFileInfo, QSettings
+from PyQt5.QtCore import QFileInfo
 from PyQt5.QtGui import *
-from PyQt5.QtWidgets import QApplication, QWidget, QMessageBox, QFileDialog, QFontDialog, QColorDialog
+from PyQt5.QtWidgets import QApplication, QMessageBox, QFileDialog, QFontDialog, QColorDialog
 from PyQt5.QtGui import QTextCursor
-from PyQt5.QtWidgets import  QLineEdit, QPlainTextEdit, QVBoxLayout
-from PyQt5.QtCore import QRegExp
-from PyQt5.QtGui import QColor, QRegExpValidator, QSyntaxHighlighter, QTextCharFormat,QTextDocument
-import math
 import XML_Editor
-import ctypes
-import copy
-from PyQt5.QtPrintSupport import *
 from PyQt5.uic import loadUiType
 from prettify import *
 from minify import *
 from consistancy import *
 from compression import *
+# from xmltojson_v2 import *
+# from json_display import *
 
 XML_Editor, _ = loadUiType('XML_Editor.ui')
+
 
 ################
 class SyntaxHighlighter(QSyntaxHighlighter):
@@ -29,7 +25,7 @@ class SyntaxHighlighter(QSyntaxHighlighter):
 
     def highlight_line(self, line_num):
         fmt = QTextCharFormat()
-        fmt.setBackground(QColor('black'))
+        fmt.setBackground(QColor('blue'))
         if isinstance(line_num, int) and line_num >= 0 and isinstance(fmt, QTextCharFormat):
             self._highlight_lines[line_num] = fmt
             block = self.document().findBlockByLineNumber(line_num)
@@ -44,6 +40,8 @@ class SyntaxHighlighter(QSyntaxHighlighter):
         fmt = self._highlight_lines.get(blockNumber)
         if fmt is not None:
             self.setFormat(0, len(text), fmt)
+
+
 ################
 class MainApp(QMainWindow, XML_Editor):
     def __init__(self, parent=None):
@@ -56,7 +54,7 @@ class MainApp(QMainWindow, XML_Editor):
         self.setWindowTitle('XML Editor')
         self.menu_tool_bar()
         self.handle_buttons()
-        self.highlighter = SyntaxHighlighter(self.editor)##############
+        self.highlighter = SyntaxHighlighter(self.editor)  ##############
 
     global flag
     flag = 0
@@ -300,7 +298,7 @@ class MainApp(QMainWindow, XML_Editor):
         # De_Compress
         self.pushButton_7.clicked.connect(lambda: self.op7())
 
-    def get_line_by_char(string,char_no):
+    def get_line_by_char(string, char_no):
         '''
         Takes a string and a number as input and determines the line number this character belongs to.
         '''
@@ -310,8 +308,9 @@ class MainApp(QMainWindow, XML_Editor):
             if counter < char_no:
                 counter += len(i)
                 line += 1
-    #    print( string.splitlines())
-    return line
+        #    print( string.splitlines())
+        return line
+
     def op1(self):
         # self.highlighter.highlight_line(5) ##########################
         if self.editor.toPlainText() == '':
@@ -384,6 +383,14 @@ class MainApp(QMainWindow, XML_Editor):
 
         else:
             print("op4")
+            try:
+                self.highlighter.clear_highlight()
+            except:
+                msg = QMessageBox()
+                msg.setWindowTitle("error")
+                msg.setText("Input Error \n")
+                msg.setIcon(QMessageBox.Critical)
+                x = msg.exec_()
 
     # Minify
     def op5(self):

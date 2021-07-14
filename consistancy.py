@@ -4,13 +4,14 @@ text = '''
      Some IDREFS (refs attribute of element pointer) do not have a corresponding id in this sample-->
 <?xml-model href="data.rnc" type="application/relax-ng-compact-syntax"?>
 <data version="3.0"> 
-   <synsets source="dict/data.adv" xml:base="data.adv.xml"><!--10 out of 3621 elements-->
+   <synsets source="dict/data.adv" xml:base="data.adv.xml">
+   <!--10 out of 3621 elements-->
     <synset id="r00001740" type="r">
          <lex_filenum>02</lex_filenum>
          <word lex_id="0">a cappella</word>
          <def>without musical accompaniment</def>
          <example>they performed a cappella</example>
-      </synset>
+    </synset>  
       <synset id="r00261389" type="r">
          <lex_filenum>02</lex_filenum>
          <word lex_id="0">agonizingly</word>
@@ -37,7 +38,8 @@ text = '''
          <example>she was a surpassingly beautiful woman</example>
       </synset>
    </synsets>
-</data>'''
+</data>
+'''
 
 
 
@@ -63,6 +65,7 @@ def error(text):
 def error2(text):
     stack = []
     stack2 = []
+    stack_error_loc = []
     has_children = []
     true = "true"
     false = "false"
@@ -70,18 +73,19 @@ def error2(text):
     for i in range(len(text)):
         temp = ""
         temp2 = ""
+        temp_error_loc = 0
         compare = ""
         j = i + 1
-        if j > len(text)-1:
+        if j > len(text) - 1:
             break
         k = i + 2
-        if k > len(text)-1:
+        if k > len(text) - 1:
             break
         flag = 0
 
-        if text[i] == '<' and text[i+1] != '/':    # storing opening tags
+        if text[i] == '<' and text[i+1] != '/' and text[i+1] != '!' and text[i+1] != '?':    # storing opening tags
             temp += text[i]  # put <
-
+            temp_error_loc = i
             while text[j] != '>' and text[j] != ' ':  # and text[j] != '?' and text[j] != '!':
                 temp += text[j]
                 j += 1
@@ -89,9 +93,14 @@ def error2(text):
                 temp += '>'
                 if text[j-1] != '/':  # if it is a self closing tag don't put in stack
                     stack.append(temp)
-                    if text[j+1] != '\n':
+                    stack_error_loc.append(temp_error_loc)
+                    ch = j
+                    while text[ch] != '>':
+                        ch += 1
+
+                    if text[ch+1] != '\n':
                         has_children.append(false)
-                    else:
+                    elif text[ch + 1] == '\n':
                         has_children.append(true)
 
         if text[i] == '<' and text[i + 1] == '/':   #stroing closing tag'
@@ -106,28 +115,48 @@ def error2(text):
 
 
                 compare = stack[-1]   # compare the closing with the opening
-                # print(stack, compare)
-                # print(temp2)
+                #print(stack, stack2)
+                #print(has_children)
                 if compare == temp2:
                     stack.pop()
                     stack2.pop()
                     has_children.pop()
-                elif compare != temp2:  #missing closing tag so add a closing tag
+                    stack_error_loc.pop()
+                if compare != temp2:  #missing closing tag so add a closing tag
                     temp2_cl_tag = compare[:1] + '/' + compare[1:]
                     if has_children[-1] == "true":
                         text = text[:i] + temp2_cl_tag + '\n' + text[i:]
                         stack.pop()
                         stack2.pop()
                         has_children.pop()
+                        #print("done")
                     elif has_children[-1] == "false":
                         text = fix_closing(stack, text)
+                        #print(has_children)
                         has_children.pop()
+
+                        stack2.pop()
+                        #print("done2")
+
+
+
+
 
 
 
 
 
     # print("stack2:", stack2)
+
+    #print(stack_error_loc)
+    #print(stack)
+    #print(stack2)
+    #while len(stack) != 0:                              #fix last closing tag miss corner case\
+    #    indent = len(stack) - 1
+    #    text = text + '\n' + indent*'\t' + stack[-1][:1] + '/' + stack[-1][1:]
+    #    stack.pop()
+
+
     return text
 
 def fix_closing(s, txt):        #missing closing tag so stack at the end not zero
@@ -140,7 +169,7 @@ def fix_closing(s, txt):        #missing closing tag so stack at the end not zer
         j = i + 1
         if j > len(txt) - 1:
             break
-        if txt[i] == '<' and txt[i + 1] != '/':     #searching for opening tags only
+        if txt[i] == '<' and txt[i + 1] != '/' and text[i+1] != '!' and text[i+1] != '?':    #searching for opening tags only
             temp += txt[i]
             while txt[j] != '>' and txt[j] != ' ':
                 temp += txt[j]
@@ -172,6 +201,9 @@ test = '''
 
 
 
+
+
+print(error2(text))
 
 
 

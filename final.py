@@ -311,7 +311,7 @@ class MainApp(QMainWindow, XML_Editor):
                 counter += len(i)
                 line += 1
     #    print( string.splitlines())
-    return line
+        return line
     def op1(self):
         # self.highlighter.highlight_line(5) ##########################
         if self.editor.toPlainText() == '':

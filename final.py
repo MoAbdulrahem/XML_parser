@@ -5,6 +5,9 @@ from PyQt5.QtCore import QFileInfo, QSettings
 from PyQt5.QtGui import *
 from PyQt5.QtWidgets import QApplication, QWidget, QMessageBox, QFileDialog, QFontDialog, QColorDialog
 from PyQt5.QtGui import QTextCursor
+from PyQt5.QtWidgets import  QLineEdit, QPlainTextEdit, QVBoxLayout
+from PyQt5.QtCore import QRegExp
+from PyQt5.QtGui import QColor, QRegExpValidator, QSyntaxHighlighter, QTextCharFormat,QTextDocument
 import math
 import XML_Editor
 import ctypes
@@ -17,7 +20,30 @@ from compression import *
 
 XML_Editor, _ = loadUiType('XML_Editor.ui')
 
+################
+class SyntaxHighlighter(QSyntaxHighlighter):
+    def __init__(self, parnet):
+        super().__init__(parnet)
+        self._highlight_lines = {}
 
+    def highlight_line(self, line_num):
+        fmt = QTextCharFormat()
+        fmt.setBackground(QColor('black'))
+        if isinstance(line_num, int) and line_num >= 0 and isinstance(fmt, QTextCharFormat):
+            self._highlight_lines[line_num] = fmt
+            block = self.document().findBlockByLineNumber(line_num)
+            self.rehighlightBlock(block)
+
+    def clear_highlight(self):
+        self._highlight_lines = {}
+        self.rehighlight()
+
+    def highlightBlock(self, text):
+        blockNumber = self.currentBlock().blockNumber()
+        fmt = self._highlight_lines.get(blockNumber)
+        if fmt is not None:
+            self.setFormat(0, len(text), fmt)
+################
 class MainApp(QMainWindow, XML_Editor):
     def __init__(self, parent=None):
         QMainWindow.__init__(self)
@@ -29,6 +55,7 @@ class MainApp(QMainWindow, XML_Editor):
         self.setWindowTitle('XML Editor')
         self.menu_tool_bar()
         self.handle_buttons()
+        self.highlighter = SyntaxHighlighter(self.editor)##############
 
     global flag
     flag = 0
@@ -272,8 +299,20 @@ class MainApp(QMainWindow, XML_Editor):
         # De_Compress
         self.pushButton_7.clicked.connect(lambda: self.op7())
 
-    # Check Errors
+    def get_line_by_char(string,char_no):
+        '''
+        Takes a string and a number as input and determines the line number this character belongs to.
+        '''
+        counter = 0
+        line = 0
+        for i in string.splitlines():
+            if counter < char_no:
+                counter += len(i)
+                line += 1
+    #    print( string.splitlines())
+    return line
     def op1(self):
+        # self.highlighter.highlight_line(5) ##########################
         if self.editor.toPlainText() == '':
             msg = QMessageBox()
             msg.setWindowTitle("error")
@@ -284,6 +323,7 @@ class MainApp(QMainWindow, XML_Editor):
         else:
             try:
                 print("op1")
+                self.highlighter.clear_highlight()
                 self.add_text(error2(self.editor.toPlainText()))
             except:
                 msg = QMessageBox()
@@ -303,6 +343,7 @@ class MainApp(QMainWindow, XML_Editor):
 
         else:
             try:
+                self.highlighter.clear_highlight()
                 print("op2")
             except:
                 msg = QMessageBox()
@@ -321,14 +362,15 @@ class MainApp(QMainWindow, XML_Editor):
             x = msg.exec_()
 
         else:
-            # try:
-            self.add_text(prettify_data(scrape_data(self.editor.toPlainText())))
-            # except:
-            #     msg = QMessageBox()
-            #     msg.setWindowTitle("error")
-            #     msg.setText("Input Error \n")
-            #     msg.setIcon(QMessageBox.Critical)
-            #     x = msg.exec_()
+            try:
+                self.add_text(prettify_data(scrape_data(self.editor.toPlainText())))
+                self.highlighter.clear_highlight()
+            except:
+                msg = QMessageBox()
+                msg.setWindowTitle("error")
+                msg.setText("Input Error \n")
+                msg.setIcon(QMessageBox.Critical)
+                x = msg.exec_()
 
     # Convert To JSON
     def op4(self):
@@ -353,6 +395,7 @@ class MainApp(QMainWindow, XML_Editor):
 
         else:
             try:
+                self.highlighter.clear_highlight()
                 self.add_text(Minify(self.editor.toPlainText()))
             except:
                 msg = QMessageBox()
@@ -372,6 +415,7 @@ class MainApp(QMainWindow, XML_Editor):
 
         else:
             try:
+                self.highlighter.clear_highlight()
                 # self.add_text(Minify(self.editor.toPlainText()))
                 original_data = Minify(self.editor.toPlainText())
                 # original_data = Minify("ABCDADADA")
@@ -399,6 +443,7 @@ class MainApp(QMainWindow, XML_Editor):
 
         else:
             try:
+                self.highlighter.clear_highlight()
                 with open('hash-table.txt', 'r', encoding='utf-8') as f:
                     string_hash_table = f.read()
                 new_hash_table = eval(string_hash_table)
@@ -406,7 +451,7 @@ class MainApp(QMainWindow, XML_Editor):
                 decoded_string = decode(self.editor.toPlainText())
                 # print (decoded_string)
                 reconstructed_string = binary_to_string(decoded_string, new_hash_table)
-                # reconstructed_string = prettify_data(scrape_data(reconstructed_string))
+                # reconstructed_string = prettify_data(reconstructed_string)
                 # print(reconstructed_string)
                 self.add_text(reconstructed_string)
                 with open('hash-table.txt', 'w', encoding='utf-8') as fs:

@@ -7,7 +7,7 @@ text = '''
    <synsets source="dict/data.adv" xml:base="data.adv.xml">
 
       <synset id="r00001740" type="r">
-         02</lex_filenum>
+         <lex_filenum>02</lex_filenum>
          <word lex_id="0">a cappella</word>
          <def>without musical accompaniment</def>
          <example>they performed a cappella</example>

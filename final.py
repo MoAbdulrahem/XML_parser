@@ -321,6 +321,7 @@ class MainApp(QMainWindow, XML_Editor):
 
         else:
             try:
+                self.highlighter.clear_highlight()
                 print("op1")
                 # self.add_text(error2(self.editor.toPlainText()))
                 x = self.get_line_by_char(503)

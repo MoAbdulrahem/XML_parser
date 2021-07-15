@@ -238,7 +238,7 @@ class MainApp(QMainWindow, XML_Editor):
 
             with f:
                 full_data = f.read()
-                data = full_data[:5000]
+                data = full_data[:20000]
                 row = self.editor.toPlainText()
                 if len(row) != 0:
                     dialog = MainApp()

@@ -421,7 +421,7 @@ class MainApp(QMainWindow, XML_Editor):
             try:
                 # print("op5")
                 self.highlighter.clear_highlight()
-                self.add_text(Minify(self.editor.toPlainText()))
+                self.add_text(Minify(self.editor.toPlainText()).replace('  ',''))
             except:
                 msg = QMessageBox()
                 msg.setWindowTitle("error")

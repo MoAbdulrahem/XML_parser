@@ -11,8 +11,8 @@ from prettify import *
 from minify import *
 from consistancy import *
 from compression import *
-from xmltojson_v2 import *
-from json_display import *
+# from xmltojson_v2 import *
+# from json_display import *
 
 XML_Editor, _ = loadUiType('XML_Editor.ui')
 

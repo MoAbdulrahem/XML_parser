@@ -802,7 +802,6 @@ QScrollBar::add-page:vertical, QScrollBar::sub-page:vertical {
     <property name="title">
      <string>Operations</string>
     </property>
-    <addaction name="action1"/>
     <addaction name="action2"/>
     <addaction name="separator"/>
     <addaction name="action3"/>

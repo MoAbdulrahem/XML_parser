@@ -1,4 +1,4 @@
-# Implementing comprission algorithm وربنا يستر
+# Implementing comprission algorithm 
 
 # Huffman Coding Algorithm
 hashing_table = dict() 

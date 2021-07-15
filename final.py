@@ -343,7 +343,11 @@ class MainApp(QMainWindow, XML_Editor):
 
         else:
             try:
-                self.highlighter.clear_highlight()
+                ###########################
+                self.highlighter.highlight_line(5)
+                self.highlighter.highlight_line(9)
+                ##############################
+                # self.highlighter.clear_highlight()
                 print("op2")
             except:
                 msg = QMessageBox()

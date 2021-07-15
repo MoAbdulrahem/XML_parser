@@ -7,7 +7,7 @@ def display_json(json_string):
     '''
     json_string = json_string.replace(', ',' ')
     level = 0
-    spaces = ' '*4*level
+    spaces = ' '*5*level
     display = ""
     temp_tag = ""
     temp_value = ""
@@ -62,7 +62,7 @@ def display_json(json_string):
     display = display.replace(',','')
     return display
 
-if __name__ == "__main__":
+# if __name__ == "__main__":
 
     # temp_print = display_json(test_json.replace(', ',' ').replace(',',''))
     # print(temp_print)

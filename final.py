@@ -11,8 +11,8 @@ from prettify import *
 from minify import *
 from consistancy import *
 from compression import *
-# from xmltojson_v2 import *
-# from json_display import *
+from xmltojson_v2 import *
+from json_display import *
 
 XML_Editor, _ = loadUiType('XML_Editor.ui')
 
@@ -150,8 +150,6 @@ class MainApp(QMainWindow, XML_Editor):
 
         # Check Errors
         self.action1.triggered.connect(self.op1)
-        # Solve Errors
-        self.action2.triggered.connect(self.op2)
         # Prettify
         self.action3.triggered.connect(self.op3)
         # Convert To JSON
@@ -285,8 +283,6 @@ class MainApp(QMainWindow, XML_Editor):
     def handle_buttons(self):
         # Check Errors
         self.pushButton.clicked.connect(lambda: self.op1())
-        # Solve Errors
-        self.pushButton_2.clicked.connect(lambda: self.op2())
         # Prettify
         self.pushButton_3.clicked.connect(lambda: self.op3())
         # Convert To JSON
@@ -323,7 +319,7 @@ class MainApp(QMainWindow, XML_Editor):
         else:
             try:
                 print("op1")
-                self.highlighter.clear_highlight()
+                # self.highlighter.clear_highlight()
                 self.add_text(error2(self.editor.toPlainText()))
             except:
                 msg = QMessageBox()
@@ -332,29 +328,6 @@ class MainApp(QMainWindow, XML_Editor):
                 msg.setIcon(QMessageBox.Critical)
                 x = msg.exec_()
 
-    # Solve Errors
-    def op2(self):
-        if self.editor.toPlainText() == '':
-            msg = QMessageBox()
-            msg.setWindowTitle("error")
-            msg.setText("File is empty! \n")
-            msg.setIcon(QMessageBox.Warning)
-            x = msg.exec_()
-
-        else:
-            try:
-                ###########################
-                self.highlighter.highlight_line(5)
-                self.highlighter.highlight_line(9)
-                ##############################
-                # self.highlighter.clear_highlight()
-                print("op2")
-            except:
-                msg = QMessageBox()
-                msg.setWindowTitle("error")
-                msg.setText("Input Error \n")
-                msg.setIcon(QMessageBox.Critical)
-                x = msg.exec_()
 
     # Prettify
     def op3(self):

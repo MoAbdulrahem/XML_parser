@@ -22,7 +22,7 @@ text = '''
          <pointer refs="a01711724" source="1" target="1">Derived from adjective</pointer>
          <def>in a very painful manner</def>
          <example>the progress was agonizingly slow</example>
-
+      </synset>
       <synset id="r00423888" type="r">
          <lex_filenum>02</lex_filenum>
          <word lex_id="0">rallentando</word>

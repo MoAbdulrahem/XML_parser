@@ -65,7 +65,7 @@ def json_write_metadata(metadata, current_json):
         current_json += f"_{md[0]}:{md[1]}, "
     return current_json+ "}"
 
-tags = scrape_data(sample)
+# tags = scrape_data(sample)
 # tags = ['<data version="3.0">', '<synsets source="dict/data.adv" xml:base="data.adv.xml">',
 #         '<synset id="r00001740" type="r">', '<lex_filenum>', '02', '</lex_filenum>',
 #         '<word lex_id="0">', 'a cappella', '</word>', '<def>', 'without musical accompaniment',
@@ -108,7 +108,7 @@ def jsonify(tags):
         else:
 
             current_json = current_json + "}"
-    print(current_json)
+    # print(current_json)
     return current_json
 
-test_json = (jsonify(tags))
+# test_json = (jsonify(tags))

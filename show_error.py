@@ -136,14 +136,6 @@ def show_error(text):
                         stack2.pop()
                         #print("done2")
 
-
-
-
-
-
-
-
-
     # print("stack2:", stack2)
 
     #print(stack_error_loc)

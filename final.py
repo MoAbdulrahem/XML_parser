@@ -13,7 +13,7 @@ from consistancy import *
 from compression import *
 from xmltojson_v2 import *
 from json_display import *
-
+from show_error import *
 XML_Editor, _ = loadUiType('XML_Editor.ui')
 
 
@@ -322,22 +322,26 @@ class MainApp(QMainWindow, XML_Editor):
         else:
             try:
                 self.highlighter.clear_highlight()
-                print("op1")
+                # print("op1")
                 # self.add_text(error2(self.editor.toPlainText()))
-                x = self.get_line_by_char(503)
-                self.highlighter.highlight_line(x - 1)
-                msg = QMessageBox()
-                msg.setWindowTitle("Detect Errors")
-                msg.setText("Highlighted tags are not complete \n")
-                msg.setIcon(QMessageBox.Warning)
-                x = msg.exec_()
-            except:
+                # self.highlighter.clear_highlight()
+                error_list = show_error(self.editor.toPlainText())
+                # print (error_list)
+                for i in error_list:
+                    x = self.get_line_by_char(i)
+                    self.highlighter.highlight_line(x - 1)
                 # msg = QMessageBox()
-                # msg.setWindowTitle("error")
-                # msg.setText("Input Error \n")
-                # msg.setIcon(QMessageBox.Critical)
+                # msg.setWindowTitle("Detect Errors")
+                # msg.setText("Highlighted tags are not complete \n")
+                # msg.setIcon(QMessageBox.Warning)
                 # x = msg.exec_()
-                print("op")
+            except:
+                msg = QMessageBox()
+                msg.setWindowTitle("error")
+                msg.setText("Input Error \n")
+                msg.setIcon(QMessageBox.Critical)
+                x = msg.exec_()
+                # print("op")
 
     # solve errors
     def op2(self):
@@ -350,9 +354,10 @@ class MainApp(QMainWindow, XML_Editor):
 
         else:
             try:
-                print("op2")
+                # print("op2")
                 self.highlighter.clear_highlight()
                 # self.add_text(prettify_data(scrape_data(self.editor.toPlainText())))
+                self.add_text(error2(self.editor.toPlainText()))
             except:
                 msg = QMessageBox()
                 msg.setWindowTitle("error")
@@ -371,7 +376,7 @@ class MainApp(QMainWindow, XML_Editor):
 
         else:
             try:
-                print("op3")
+                # print("op3")
                 self.add_text(prettify_data(scrape_data(self.editor.toPlainText())))
                 self.highlighter.clear_highlight()
             except:
@@ -392,7 +397,7 @@ class MainApp(QMainWindow, XML_Editor):
 
         else:
             try:
-                print("op4")
+                # print("op4")
                 self.highlighter.clear_highlight()
                 json_text = jsonify(scrape_data(self.editor.toPlainText()))
                 self.add_text(display_json(json_text))
@@ -414,7 +419,7 @@ class MainApp(QMainWindow, XML_Editor):
 
         else:
             try:
-                print("op5")
+                # print("op5")
                 self.highlighter.clear_highlight()
                 self.add_text(Minify(self.editor.toPlainText()))
             except:
@@ -435,7 +440,7 @@ class MainApp(QMainWindow, XML_Editor):
 
         else:
             try:
-                print("op6")
+                # print("op6")
                 self.highlighter.clear_highlight()
                 # self.add_text(Minify(self.editor.toPlainText()))
                 original_data = Minify(self.editor.toPlainText())
@@ -464,7 +469,7 @@ class MainApp(QMainWindow, XML_Editor):
 
         else:
             try:
-                print("op7")
+                # print("op7")
                 self.highlighter.clear_highlight()
                 with open('hash-table.txt', 'r', encoding='utf-8') as f:
                     string_hash_table = f.read()

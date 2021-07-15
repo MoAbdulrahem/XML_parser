@@ -31,7 +31,7 @@ def scrape_data(text):
         if text[i] == '<': #an openning tag
             temp += text[i]
             try:
-                while text[j] != '>' and text[j] != '?' and text[j] != '!': #loop until '>' or " " to get the tag name
+                while text[j] != '>' and text[j] != '!': #loop until '>' or " " to get the tag name
                     temp += text[j]     #concatenate the tag name to temp
                     j += 1
 

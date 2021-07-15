@@ -55,11 +55,11 @@ def build_XML_tree(tags):
     return root
 
 
-if __name__ == "__main__":
-    tags = ['<tag1>','<tag2>', 'value','</tag2>' , '</tag1>']
-    root = build_XML_tree(tags)
+# if __name__ == "__main__":
+#     tags = ['<tag1>','<tag2>', 'value','</tag2>' , '</tag1>']
+#     root = build_XML_tree(tags)
     
-    root.print_tree()
-    print('\n\n\n')
-    for child in root.children:
-        print(child.data)
+#     root.print_tree()
+#     print('\n\n\n')
+#     for child in root.children:
+#         print(child.data)
